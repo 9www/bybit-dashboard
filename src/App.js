@@ -4,6 +4,7 @@ import "./App.scss";
 function App() {
     return (
         <div>
+            Bybit - DashBoard
             <FetchFutureWallet />
             <FetchFuturesPosition />
         </div>

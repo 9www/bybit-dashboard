@@ -9,6 +9,7 @@ import "./FetchFuturePosition.scss";
 
 function FetchFuturesPosition() {
     const [isLoaded, setIsLoaded] = useState(true);
+    const [responseData, setResponseData] = useState([]);
     const [chartData, setChartData] = useState({});
     const ENDPOINT = "/private/linear/position/list";
     const TIMESTAMP = Date.now().toString();
@@ -35,12 +36,12 @@ function FetchFuturesPosition() {
                     )
                     .map((d) => d.data);
                 console.log(getData);
-
+                setResponseData(getData);
                 setChartData({
                     labels: getData.map(
                         (d) =>
                             d.symbol.substring(0, d.symbol.length - 4) +
-                            (d.side == "Buy" ? "-Long" : "-Short")
+                            (d.side === "Buy" ? "-Long" : "-Short")
                     ),
                     datasets: [
                         {
@@ -67,6 +68,7 @@ function FetchFuturesPosition() {
         setInterval(() => {
             setIsLoaded(false);
         }, 400);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     if (isLoaded === true) {
@@ -77,10 +79,15 @@ function FetchFuturesPosition() {
                 <div className="bar-chart-container">
                     <div className="bar-chart-topic-container">
                         <div className="bar-chart-topic">
-                            Realised & Unrealised PnL (Long & Short Ver.)
+                            Total Realised & Unrealised PnL (Long & Short Ver.)
                         </div>
                     </div>
                     <BarChart chartData={chartData} />
+                </div>
+                <div>
+                    {responseData.map(
+                        (d) => precisionRound(d.realised_pnl) + "  "
+                    )}
                 </div>
             </div>
         );

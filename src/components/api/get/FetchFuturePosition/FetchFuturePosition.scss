@@ -4,10 +4,10 @@
     display: flex;
     padding: 0 20px;
     .bar-chart-container{
-        width: 60%;
+        width: 70%;
         border: solid 2px $primary-color;
         border-radius: 3px ;
-        
+        margin: 0 10px;
         .bar-chart-topic-container{
             display: flex;
             justify-self: center;
