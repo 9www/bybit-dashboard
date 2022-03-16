@@ -1,17 +1,32 @@
-.wallet-container{
+@import "../../../../styles/variable.scss";
+
+.wallet-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    .data-container{
-        margin: 10px;
-        padding: 10px;
-        border: solid 1px;
-      
-        .data-type{
-      
+    .data-container {
+        margin: 15px 30px;
+        width: 120px;
+        
+        .data-type-container {
+            border: solid 2px $primary-color;
+            padding: 5px;
+            border-radius: 3px 3px 0px 0px;
+            background-color: $primary-color;
+           
+            .data-type {
+              text-align: center;
+              color: $text-white-color;
+            }
         }
-        .data{
-            
+        .data-dollar-container {
+            border: solid 2px $primary-color;
+            border-radius: 0px 0px 3px 3px;
+            padding: 15px;
+            .data-dollar {
+                text-align: center;
+                color:  $text-black-color;
+            }
         }
     }
 }

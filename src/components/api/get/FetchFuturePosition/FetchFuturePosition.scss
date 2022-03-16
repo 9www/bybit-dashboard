@@ -1,0 +1,26 @@
+@import "../../../../styles/variable.scss";
+
+.future-position-container{
+    display: flex;
+    padding: 0 20px;
+    .bar-chart-container{
+        width: 60%;
+        border: solid 2px $primary-color;
+        border-radius: 3px ;
+        
+        .bar-chart-topic-container{
+            display: flex;
+            justify-self: center;
+            align-items: center;
+            background-color: $primary-color;
+            padding: 10px;
+            margin-bottom: 10px;
+            .bar-chart-topic{
+                text-align: center;
+                margin: 10px auto;
+                color: $text-white-color;
+            }
+
+        }
+    }
+}
