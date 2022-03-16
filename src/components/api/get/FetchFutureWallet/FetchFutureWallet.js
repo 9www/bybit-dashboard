@@ -46,16 +46,6 @@ function FetchFutureWallet() {
                     </div>
                 </div>
             </div>
-            <div className="data-container">
-                <div className="data-type-container">
-                    <div className="data-type">Current Wallet</div>
-                </div>
-                <div className="data-dollar-container">
-                    <div className="data-dollar">
-                        ${precisionRound(responseData.equity)}
-                    </div>
-                </div>
-            </div>
 
             <div className="data-container">
                 <div className="data-type-container">
