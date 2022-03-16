@@ -25,7 +25,7 @@ function FetchFutureWallet() {
                 url: ENDPOINT,
                 params: params,
             });
-            //  console.log(res);
+            console.log(res.data.result);
             setResponseData(res.data.result.USDT);
         } catch (err) {
             console.error(err);
@@ -37,27 +37,54 @@ function FetchFutureWallet() {
     return (
         <div className="wallet-container">
             <div className="data-container">
-                <div className="data-type">Wallet Balance</div>
-                <div className="data">
-                    ${precisionRound(responseData.wallet_balance)}
+                <div className="data-type-container">
+                    <div className="data-type">Wallet Balance</div>
+                </div>
+                <div className="data-dollar-container">
+                    <div className="data-dollar">
+                        ${precisionRound(responseData.wallet_balance)}
+                    </div>
                 </div>
             </div>
             <div className="data-container">
-                <div className="data-type">Current Wallet</div>
-                <div className="data">
-                    ${precisionRound(responseData.equity)}
+                <div className="data-type-container">
+                    <div className="data-type">Current Wallet</div>
+                </div>
+                <div className="data-dollar-container">
+                    <div className="data-dollar">
+                        ${precisionRound(responseData.equity)}
+                    </div>
+                </div>
+            </div>
+
+            <div className="data-container">
+                <div className="data-type-container">
+                    <div className="data-type">Unrealised PnL</div>
+                </div>
+                <div className="data-dollar-container">
+                    <div className="data-dollar">
+                        ${precisionRound(responseData.unrealised_pnl)}
+                    </div>
                 </div>
             </div>
             <div className="data-container">
-                <div className="data-type">Unrealised PnL</div>
-                <div className="data">
-                    ${precisionRound(responseData.unrealised_pnl)}
+                <div className="data-type-container">
+                    <div className="data-type">Realised PnL</div>
+                </div>
+                <div className="data-dollar-container">
+                    <div className="data-dollar">
+                        ${precisionRound(responseData.cum_realised_pnl)}
+                    </div>
                 </div>
             </div>
             <div className="data-container">
-                <div className="data-type">Realised PnL</div>
-                <div className="data">
-                    ${precisionRound(responseData.cum_realised_pnl)}
+                <div className="data-type-container">
+                    <div className="data-type">Today Profit</div>
+                </div>
+                <div className="data-dollar-container">
+                    <div className="data-dollar">
+                        ${precisionRound(responseData.realised_pnl)}
+                    </div>
                 </div>
             </div>
         </div>

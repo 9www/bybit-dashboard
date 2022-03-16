@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { API_KEY, API_SECRET } from "../apiKey";
+import { API_KEY, API_SECRET } from "../../apiKey";
 
 import axios from "axios";
-import { precisionRound } from "../../Math/Math";
-import { getSignature } from "../GetSignature";
-import BarChart from "../../Chart/BarChart";
+import { precisionRound } from "../../../Math/Math";
+import { getSignature } from "../../GetSignature";
+import BarChart from "../../../Chart/BarChart";
+import "./FetchFuturePosition.scss";
 
 function FetchFuturesPosition() {
     const [isLoaded, setIsLoaded] = useState(true);
@@ -72,8 +73,13 @@ function FetchFuturesPosition() {
         return <div></div>;
     } else {
         return (
-            <div>
-                <div style={{ width: 1000 }}>
+            <div className="future-position-container">
+                <div className="bar-chart-container">
+                    <div className="bar-chart-topic-container">
+                        <div className="bar-chart-topic">
+                            Realised & Unrealised PnL (Long & Short Ver.)
+                        </div>
+                    </div>
                     <BarChart chartData={chartData} />
                 </div>
             </div>
