@@ -9,8 +9,7 @@ import "./FetchFuturePosition.scss";
 
 function FetchFuturesPosition() {
     const [isLoaded, setIsLoaded] = useState(true);
-    const [responseData, setResponseData] = useState([]);
-    const [chartData, setChartData] = useState({});
+    const [chartTotalData, setChartTotalData] = useState({});
     const ENDPOINT = "/private/linear/position/list";
     const TIMESTAMP = Date.now().toString();
     var params = {
@@ -27,7 +26,8 @@ function FetchFuturesPosition() {
                     url: ENDPOINT,
                     params: params,
                 });
-                const getData = res.data.result
+
+                const getTotalData = res.data.result
                     .filter(
                         (d) =>
                             d.data.size !== 0 ||
@@ -35,10 +35,10 @@ function FetchFuturesPosition() {
                             d.data.unrealised_pnl !== 0
                     )
                     .map((d) => d.data);
-                console.log(getData);
-                setResponseData(getData);
-                setChartData({
-                    labels: getData.map(
+                console.log(getTotalData);
+
+                setChartTotalData({
+                    labels: getTotalData.map(
                         (d) =>
                             d.symbol.substring(0, d.symbol.length - 4) +
                             (d.side === "Buy" ? "-Long" : "-Short")
@@ -46,14 +46,14 @@ function FetchFuturesPosition() {
                     datasets: [
                         {
                             label: "Realised PnL",
-                            data: getData.map((d) => d.cum_realised_pnl),
+                            data: getTotalData.map((d) => d.cum_realised_pnl),
                             backgroundColor: "rgba(61,111,170,0.3)",
                             borderColor: "rgba(61,111,170,1)",
                             borderWidth: 2,
                         },
                         {
                             label: "Unrealised PnL ",
-                            data: getData.map((d) => d.unrealised_pnl),
+                            data: getTotalData.map((d) => d.unrealised_pnl),
                             backgroundColor: "rgba(220, 180, 50,0.3)",
                             borderColor: "rgba(220, 180, 50,1)",
                             borderWidth: 2,
@@ -65,9 +65,11 @@ function FetchFuturesPosition() {
             }
         }
         fetchData();
+
         setInterval(() => {
             setIsLoaded(false);
         }, 400);
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -82,13 +84,9 @@ function FetchFuturesPosition() {
                             Total Realised & Unrealised PnL (Long & Short Ver.)
                         </div>
                     </div>
-                    <BarChart chartData={chartData} />
+                    <BarChart chartData={chartTotalData} />
                 </div>
-                <div>
-                    {responseData.map(
-                        (d) => precisionRound(d.realised_pnl) + "  "
-                    )}
-                </div>
+                <div></div>
             </div>
         );
     }
