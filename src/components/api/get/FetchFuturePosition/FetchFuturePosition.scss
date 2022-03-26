@@ -1,10 +1,11 @@
 @import "../../../../styles/variable.scss";
 
 .future-position-container{
-    display: flex;
+    
+    width: 60%;
+    height: 100%;
     padding: 0 20px;
     .bar-chart-container{
-        width: 70%;
         border: solid 2px $primary-color;
         border-radius: 3px ;
         margin: 0 10px;

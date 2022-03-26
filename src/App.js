@@ -4,11 +4,16 @@ import FetchFutureTodayPnL from "./components/api/get/FetchFutureTodayPnL/FetchF
 import "./App.scss";
 function App() {
     return (
-        <div>
+        <div className="app-container">
             Bybit - DashBoard
-            <FetchFutureWallet />
-            <FetchFuturesPosition />
-            <FetchFutureTodayPnL />
+            <div className="wallet-container">
+                {" "}
+                <FetchFutureWallet />
+            </div>
+            <div className="futures-container">
+                <FetchFuturesPosition />
+                <FetchFutureTodayPnL />
+            </div>
         </div>
     );
 }

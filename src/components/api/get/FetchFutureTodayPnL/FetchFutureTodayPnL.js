@@ -5,7 +5,7 @@ import axios from "axios";
 import { precisionRound } from "../../../Math/Math";
 import { getSignature } from "../../GetSignature";
 import LineChart from "../../../Chart/LineChart";
-
+import "./FetchFutureTodayPnL.scss";
 function FetchFutureTodayPnL() {
     const [isLoaded, setIsLoaded] = useState(true);
     const [data, setData] = useState([]);
@@ -75,7 +75,7 @@ function FetchFutureTodayPnL() {
         return <div></div>;
     } else {
         return (
-            <div className="future-position-container">
+            <div className="future-today-pnl-container">
                 <div className="bar-chart-container">
                     <div className="bar-chart-topic-container">
                         <div className="bar-chart-topic">Today PnL</div>

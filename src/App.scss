@@ -1,1 +1,13 @@
 @import "./styles/globals.scss";
+
+.app-container{
+    .wallet-container{
+
+    }
+    .futures-container{
+        display: flex;
+        flex-direction:row;
+        justify-items: center;
+        align-items: center;
+    }
+}
