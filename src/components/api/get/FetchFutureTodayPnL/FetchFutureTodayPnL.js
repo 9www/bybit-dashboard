@@ -36,7 +36,7 @@ function FetchFutureTodayPnL() {
 
                 for (let i = 0; i < getTodayData.length; i++) {
                     let sumPnL = 0;
-
+                    let symbol = 0;
                     if (i === getTodayData.length - 1) {
                         setData(newData);
                         return;
@@ -45,19 +45,16 @@ function FetchFutureTodayPnL() {
                         getTodayData[i]["symbol"] ===
                         getTodayData[i + 1]["symbol"]
                     ) {
-                        let symbol = getTodayData[i]["symbol"];
+                        symbol = getTodayData[i]["symbol"];
                         sumPnL =
                             getTodayData[i]["realised_pnl"] +
                             getTodayData[i + 1]["realised_pnl"];
-
-                        newData[index] = { symbol, sumPnL };
-                        index++;
                     } else {
-                        let symbol = getTodayData[i]["symbol"];
+                        symbol = getTodayData[i]["symbol"];
                         sumPnL = getTodayData[i]["realised_pnl"];
-                        newData[index] = { symbol, sumPnL };
-                        index++;
                     }
+                    newData[index] = { symbol, sumPnL };
+                    index++;
                 }
             } catch (err) {
                 console.error(err);
@@ -81,7 +78,9 @@ function FetchFutureTodayPnL() {
             <div className="future-today-pnl-container">
                 <div className="bar-chart-container">
                     <div className="bar-chart-topic-container">
-                        <div className="bar-chart-topic">Today PnL</div>
+                        <div className="bar-chart-topic">
+                            Today PnL (Included handling fees)
+                        </div>
                     </div>
                     <LineChart
                         chartData={{
