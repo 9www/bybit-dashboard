@@ -89,4 +89,4 @@ function FetchFuturesPosition() {
     }
 }
 
-export default React.memo(FetchFuturesPosition);
+export default FetchFuturesPosition;
