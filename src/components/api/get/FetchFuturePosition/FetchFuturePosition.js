@@ -65,10 +65,7 @@ function FetchFuturesPosition() {
         fetchData();
 
         const interval = setInterval(setIsLoading(true), 800);
-
-        return () => {
-            clearInterval(interval);
-        };
+        return () => clearInterval(interval);
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
