@@ -9,7 +9,30 @@ import "./FetchFuturePosition.scss";
 
 function FetchFuturesPosition() {
     const [isLoading, setIsLoading] = useState(false);
-    const [chartTotalData, setChartTotalData] = useState({});
+    const [data, setData] = useState([]);
+    const chartTotalData = {
+        labels: data.map(
+            (d) =>
+                d.symbol.substring(0, d.symbol.length - 4) +
+                (d.side === "Buy" ? "-Long" : "-Short")
+        ),
+        datasets: [
+            {
+                label: "Realised PnL",
+                data: data.map((d) => d.cum_realised_pnl),
+                backgroundColor: "rgba(61,111,170,0.3)",
+                borderColor: "rgba(61,111,170,1)",
+                borderWidth: 2,
+            },
+            {
+                label: "Unrealised PnL ",
+                data: data.map((d) => d.unrealised_pnl),
+                backgroundColor: "rgba(220, 180, 50,0.3)",
+                borderColor: "rgba(220, 180, 50,1)",
+                borderWidth: 2,
+            },
+        ],
+    };
     const ENDPOINT = "/private/linear/position/list";
     const TIMESTAMP = Date.now().toString();
     var params = {
@@ -33,41 +56,20 @@ function FetchFuturesPosition() {
                         d.data.unrealised_pnl !== 0
                 )
                 .map((d) => d.data);
-            console.log(getTotalData);
-
-            setChartTotalData({
-                labels: getTotalData.map(
-                    (d) =>
-                        d.symbol.substring(0, d.symbol.length - 4) +
-                        (d.side === "Buy" ? "-Long" : "-Short")
-                ),
-                datasets: [
-                    {
-                        label: "Realised PnL",
-                        data: getTotalData.map((d) => d.cum_realised_pnl),
-                        backgroundColor: "rgba(61,111,170,0.3)",
-                        borderColor: "rgba(61,111,170,1)",
-                        borderWidth: 2,
-                    },
-                    {
-                        label: "Unrealised PnL ",
-                        data: getTotalData.map((d) => d.unrealised_pnl),
-                        backgroundColor: "rgba(220, 180, 50,0.3)",
-                        borderColor: "rgba(220, 180, 50,1)",
-                        borderWidth: 2,
-                    },
-                ],
-            });
+            setData(getTotalData);
         } catch (err) {
             console.error(err);
         }
     }
     useEffect(() => {
         fetchData();
-        const interval = setInterval(() => {
-            setIsLoading(true);
-        }, 400);
-        return () => clearInterval(interval);
+
+        const interval = setInterval(setIsLoading(true), 800);
+
+        return () => {
+            clearInterval(interval);
+        };
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
