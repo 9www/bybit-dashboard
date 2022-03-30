@@ -42,16 +42,18 @@ function FetchFutureTodayPnL() {
             const getTodayData = res.data.result
                 .filter((d) => d.data.realised_pnl !== 0)
                 .map((d) => d.data);
-            console.log(getTodayData.map((d) => d.realised_pnl));
 
             for (let i = 0; i < getTodayData.length; i++) {
                 let sumPnL = 0;
                 let symbol = 0;
-                if (i === getTodayData.length - 1) {
-                    setData(newData);
-                    console.log(newData);
-                }
-                if (i !== getTodayData.length - 1) {
+
+                if (i !== getTodayData.length - 1 || i === 0) {
+                    if (getTodayData.length === 1) {
+                        symbol = getTodayData[i]["symbol"];
+                        sumPnL = getTodayData[i]["realised_pnl"];
+                        newData[index] = { symbol, sumPnL };
+                        return setData(newData);
+                    }
                     if (
                         getTodayData[i]["symbol"] ===
                         getTodayData[i + 1]["symbol"]
@@ -67,6 +69,7 @@ function FetchFutureTodayPnL() {
                     newData[index] = { symbol, sumPnL };
                     index++;
                 }
+                if (i === getTodayData.length - 1) setData(newData);
             }
         } catch (err) {
             console.error(err);
@@ -77,7 +80,9 @@ function FetchFutureTodayPnL() {
         fetchData();
 
         const interval = setInterval(setIsLoading(true), 400);
-        return () => clearInterval(interval);
+        return () => {
+            clearInterval(interval);
+        };
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
