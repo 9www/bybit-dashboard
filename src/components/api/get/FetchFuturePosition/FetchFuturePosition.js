@@ -1,14 +1,14 @@
+import React from "react";
 import { useEffect, useState } from "react";
 import { API_KEY, API_SECRET } from "../../apiKey";
 
 import axios from "axios";
-import { precisionRound } from "../../../Math/Math";
 import { getSignature } from "../../GetSignature";
 import BarChart from "../../../Chart/BarChart";
 import "./FetchFuturePosition.scss";
 
 function FetchFuturesPosition() {
-    const [isLoaded, setIsLoaded] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
     const [chartTotalData, setChartTotalData] = useState({});
     const ENDPOINT = "/private/linear/position/list";
     const TIMESTAMP = Date.now().toString();
@@ -17,63 +17,61 @@ function FetchFuturesPosition() {
         timestamp: TIMESTAMP,
     };
     params["sign"] = getSignature(params, API_SECRET);
+    async function fetchData() {
+        try {
+            const res = await axios({
+                method: "get",
+                url: ENDPOINT,
+                params: params,
+            });
 
-    useEffect(() => {
-        async function fetchData() {
-            try {
-                const res = await axios({
-                    method: "get",
-                    url: ENDPOINT,
-                    params: params,
-                });
+            const getTotalData = res.data.result
+                .filter(
+                    (d) =>
+                        d.data.size !== 0 ||
+                        d.data.cum_realised_pnl !== 0 ||
+                        d.data.unrealised_pnl !== 0
+                )
+                .map((d) => d.data);
+            console.log(getTotalData);
 
-                const getTotalData = res.data.result
-                    .filter(
-                        (d) =>
-                            d.data.size !== 0 ||
-                            d.data.cum_realised_pnl !== 0 ||
-                            d.data.unrealised_pnl !== 0
-                    )
-                    .map((d) => d.data);
-                console.log(getTotalData);
-
-                setChartTotalData({
-                    labels: getTotalData.map(
-                        (d) =>
-                            d.symbol.substring(0, d.symbol.length - 4) +
-                            (d.side === "Buy" ? "-Long" : "-Short")
-                    ),
-                    datasets: [
-                        {
-                            label: "Realised PnL",
-                            data: getTotalData.map((d) => d.cum_realised_pnl),
-                            backgroundColor: "rgba(61,111,170,0.3)",
-                            borderColor: "rgba(61,111,170,1)",
-                            borderWidth: 2,
-                        },
-                        {
-                            label: "Unrealised PnL ",
-                            data: getTotalData.map((d) => d.unrealised_pnl),
-                            backgroundColor: "rgba(220, 180, 50,0.3)",
-                            borderColor: "rgba(220, 180, 50,1)",
-                            borderWidth: 2,
-                        },
-                    ],
-                });
-            } catch (err) {
-                console.error(err);
-            }
+            setChartTotalData({
+                labels: getTotalData.map(
+                    (d) =>
+                        d.symbol.substring(0, d.symbol.length - 4) +
+                        (d.side === "Buy" ? "-Long" : "-Short")
+                ),
+                datasets: [
+                    {
+                        label: "Realised PnL",
+                        data: getTotalData.map((d) => d.cum_realised_pnl),
+                        backgroundColor: "rgba(61,111,170,0.3)",
+                        borderColor: "rgba(61,111,170,1)",
+                        borderWidth: 2,
+                    },
+                    {
+                        label: "Unrealised PnL ",
+                        data: getTotalData.map((d) => d.unrealised_pnl),
+                        backgroundColor: "rgba(220, 180, 50,0.3)",
+                        borderColor: "rgba(220, 180, 50,1)",
+                        borderWidth: 2,
+                    },
+                ],
+            });
+        } catch (err) {
+            console.error(err);
         }
+    }
+    useEffect(() => {
         fetchData();
-
-        setInterval(() => {
-            setIsLoaded(false);
+        const interval = setInterval(() => {
+            setIsLoading(true);
         }, 400);
-
+        return () => clearInterval(interval);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    if (isLoaded === true) {
+    if (isLoading === false) {
         return <div></div>;
     } else {
         return (
@@ -92,4 +90,4 @@ function FetchFuturesPosition() {
     }
 }
 
-export default FetchFuturesPosition;
+export default React.memo(FetchFuturesPosition);
