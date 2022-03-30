@@ -2,14 +2,25 @@ import { useEffect, useState } from "react";
 import { API_KEY, API_SECRET } from "../../apiKey";
 
 import axios from "axios";
-import { precisionRound } from "../../../Math/Math";
 import { getSignature } from "../../GetSignature";
 import LineChart from "../../../Chart/LineChart";
 import "./FetchFutureTodayPnL.scss";
+
 function FetchFutureTodayPnL() {
-    const [isLoaded, setIsLoaded] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
     const [data, setData] = useState([]);
-    const [chartTodayData, setChartTodayData] = useState({});
+    const chartTodayData = {
+        labels: data.map((d) => d.symbol),
+        datasets: [
+            {
+                label: "Today PnL",
+                data: data.map((d) => d.sumPnL),
+                backgroundColor: "rgba(61,111,170,0.3)",
+                borderColor: "rgba(61,111,170,1)",
+                borderWidth: 2,
+            },
+        ],
+    };
     const ENDPOINT = "/private/linear/position/list";
     const TIMESTAMP = Date.now().toString();
     var newData = [];
@@ -19,28 +30,28 @@ function FetchFutureTodayPnL() {
         timestamp: TIMESTAMP,
     };
     params["sign"] = getSignature(params, API_SECRET);
-    useEffect(() => {
-        setIsLoaded(true);
-        async function fetchData() {
-            try {
-                const res = await axios({
-                    method: "get",
-                    url: ENDPOINT,
-                    params: params,
-                });
 
-                const getTodayData = res.data.result
-                    .filter((d) => d.data.realised_pnl !== 0)
-                    .map((d) => d.data);
-                console.log(getTodayData.map((d) => d.realised_pnl));
+    async function fetchData() {
+        try {
+            const res = await axios({
+                method: "get",
+                url: ENDPOINT,
+                params: params,
+            });
 
-                for (let i = 0; i < getTodayData.length; i++) {
-                    let sumPnL = 0;
-                    let symbol = 0;
-                    if (i === getTodayData.length - 1) {
-                        setData(newData);
-                        return;
-                    }
+            const getTodayData = res.data.result
+                .filter((d) => d.data.realised_pnl !== 0)
+                .map((d) => d.data);
+            console.log(getTodayData.map((d) => d.realised_pnl));
+
+            for (let i = 0; i < getTodayData.length; i++) {
+                let sumPnL = 0;
+                let symbol = 0;
+                if (i === getTodayData.length - 1) {
+                    setData(newData);
+                    console.log(newData);
+                }
+                if (i !== getTodayData.length - 1) {
                     if (
                         getTodayData[i]["symbol"] ===
                         getTodayData[i + 1]["symbol"]
@@ -56,22 +67,25 @@ function FetchFutureTodayPnL() {
                     newData[index] = { symbol, sumPnL };
                     index++;
                 }
-            } catch (err) {
-                console.error(err);
             }
+        } catch (err) {
+            console.error(err);
         }
+    }
+
+    useEffect(() => {
         fetchData();
 
-        const timer = setInterval(() => {
-            setIsLoaded(false);
-        }, 400);
+        const interval = setInterval(setIsLoading(true), 400);
+
         return () => {
-            clearInterval(timer);
+            clearInterval(interval);
         };
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    if (isLoaded === true) {
+    if (isLoading === false) {
         return <div></div>;
     } else {
         return (
@@ -82,20 +96,7 @@ function FetchFutureTodayPnL() {
                             Today PnL (Included handling fees)
                         </div>
                     </div>
-                    <LineChart
-                        chartData={{
-                            labels: data.map((d) => d.symbol),
-                            datasets: [
-                                {
-                                    label: "Today PnL",
-                                    data: data.map((d) => d.sumPnL),
-                                    backgroundColor: "rgba(61,111,170,0.3)",
-                                    borderColor: "rgba(61,111,170,1)",
-                                    borderWidth: 2,
-                                },
-                            ],
-                        }}
-                    />
+                    <LineChart chartData={chartTodayData} />
                 </div>
             </div>
         );
