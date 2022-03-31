@@ -5,7 +5,7 @@ import "./App.scss";
 function App() {
     return (
         <div className="app-container">
-            Bybit - DashBoard
+            Bybit - DashBoard by Wingo~
             <div className="wallet-container">
                 {" "}
                 <FetchFutureWallet />
