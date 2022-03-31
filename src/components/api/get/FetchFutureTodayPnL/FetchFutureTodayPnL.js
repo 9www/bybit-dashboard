@@ -40,20 +40,22 @@ function FetchFutureTodayPnL() {
             });
 
             const getTodayData = res.data.result
-                .filter((d) => d.data.realised_pnl !== 0)
+                .filter(
+                    (d) =>
+                        d.data.realised_pnl !== 0 || d.data.unrealised_pnl !== 0
+                )
                 .map((d) => d.data);
-
             for (let i = 0; i < getTodayData.length; i++) {
                 let sumPnL = 0;
                 let symbol = 0;
 
-                if (i !== getTodayData.length - 1 || i === 0) {
-                    if (getTodayData.length === 1) {
-                        symbol = getTodayData[i]["symbol"];
-                        sumPnL = getTodayData[i]["realised_pnl"];
-                        newData[index] = { symbol, sumPnL };
-                        return setData(newData);
-                    }
+                if (getTodayData.length === 1 && i === 0) {
+                    symbol = getTodayData[i]["symbol"];
+                    sumPnL = getTodayData[i]["realised_pnl"];
+                    newData[index] = { symbol, sumPnL };
+                    return setData(newData);
+                }
+                if (i !== getTodayData.length - 1) {
                     if (
                         getTodayData[i]["symbol"] ===
                         getTodayData[i + 1]["symbol"]
